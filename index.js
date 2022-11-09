@@ -1,46 +1,52 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dbconfig = require("./config/db.config");
+const cookieParser = require('cookie-parser')
 
 const auth = require("./middlewares/auth");
 const errors = require("./middlewares/errors");
 
 const unless = require("express-unless");
 
+const {errorHandler} = require("./middlewares/errors")
+
 const app = express();
 
+const DB_URL = process.env.MONGO_URL;
 mongoose.Promise = global.Promise;
 mongoose
-  .connect(dbconfig.db, {
+  .connect(DB_URL, {
     useNewurlparser: true,
     useUnifiedTopology: true,
   })
   .then(
     () => {
-      console.log("Database ecta gahuwa");
+      app.listen(process.env.port || 3000, function () {
+        console.log("gammac thama cudda !");
+      });
+
     },
     (error) => {
       console.log("deiyane deiyane Database ecta gahagnna ba" + error);
     }
   );
 
-auth.authenticateToken.unless = unless;
+// auth.authenticateToken = unless;
 
-app.use(
-  auth.authenticateToken.unless({
-    path: [
-      { url: "/users/login", methods: ["POST"] },
-      { url: "/users/register", methods: ["POST"] },
-    ],
-  })
-);
+// app.use(
+//   auth.authenticateToken.unless({
+//     path: [
+//       { url: "/users/login", methods: ["POST"] },
+//       { url: "/users/register", methods: ["POST"] },
+//     ],
+//   })
+// );
 
 app.use(express.json());
 
-app.use("./routes/users.routes");
+app.use(cookieParser())
 
-app.use(errors.errorhandler);
+app.use(require("./routes/users.routes"));
 
-app.listen(process.env.port || 4000, function () {
-  console.log("gammac thama cudda !");
-});
+// app.use("*",errorHandler);
+
