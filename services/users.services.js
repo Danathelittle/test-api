@@ -20,17 +20,6 @@ async function register(params, callback) {
   if (params.username === undefined) {
     return callback({ messege: "username required" });
   }
-  // const user = new User(params);
-  // user
-  //   .save()
-  //   .then((response) => {
-  //     return callback(null, response);
-  //   })
-  //   .cactch((error) => {
-  //     return callback(error);
-  //   });
-
-  
 }
 
 module.exports = {
