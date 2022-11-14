@@ -1,17 +1,18 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dbconfig = require("./config/db.config");
-const cookieParser = require('cookie-parser')
+require('dotenv').config()
+const cookieParser = require("cookie-parser");
 
 const auth = require("./middlewares/auth");
 const errors = require("./middlewares/errors");
 
 const unless = require("express-unless");
 
-const {errorHandler} = require("./middlewares/errors")
+const { errorHandler } = require("./middlewares/errors");
 
 const app = express();
-
+console.log(process.env.MONGO_URL)
 const DB_URL = process.env.MONGO_URL;
 mongoose.Promise = global.Promise;
 mongoose
@@ -22,31 +23,16 @@ mongoose
   .then(
     () => {
       app.listen(process.env.port || 3000, function () {
-        console.log("gammac thama cudda !");
+        console.log("server running\ndatabase connected !");
       });
-
     },
     (error) => {
-      console.log("deiyane deiyane Database ecta gahagnna ba" + error);
+      console.log("database not conected" + error);
     }
   );
 
-// auth.authenticateToken = unless;
-
-// app.use(
-//   auth.authenticateToken.unless({
-//     path: [
-//       { url: "/users/login", methods: ["POST"] },
-//       { url: "/users/register", methods: ["POST"] },
-//     ],
-//   })
-// );
-
 app.use(express.json());
 
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.use(require("./routes/users.routes"));
-
-// app.use("*",errorHandler);
-
